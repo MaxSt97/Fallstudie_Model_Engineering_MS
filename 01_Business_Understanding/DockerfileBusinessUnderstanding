@@ -1,0 +1,20 @@
+FROM python:3.11
+
+#workdir
+WORKDIR /app
+
+#initiate and activate a virtual environment
+RUN python -m venv venv
+RUN . venv/bin/activate
+
+#install required python modules
+RUN pip install pandas
+RUN pip install matplotlib
+RUN pip install openpyxl
+
+
+#copy python script to working directory
+COPY 01_business_understanding.py .
+
+
+CMD ["python", "01_business_understanding.py"]
