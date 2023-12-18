@@ -91,3 +91,7 @@ feature_importances = pd.DataFrame(model.feature_importances_,
                                       index=X_train.columns,
                                         columns=['importance']).sort_values('importance', ascending=False)
 print(feature_importances)
+
+# save model
+import pickle
+pickle.dump(model, open('../model.pkl', 'wb'))

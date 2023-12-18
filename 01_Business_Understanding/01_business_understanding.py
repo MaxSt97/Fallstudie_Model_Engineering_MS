@@ -49,29 +49,34 @@ ax = combined_data_percentage.plot(kind='bar', stacked=True, color=['C1', 'C0'])
 
 # Prozentwerte über jedem Segment anzeigen
 for container in ax.containers:
-    ax.bar_label(container, fmt='%.1f%%', label_type='edge', fontsize=8, color='black', padding=2)
+    ax.bar_label(container, fmt='%.1f%%', label_type='center', fontsize=8, color='black', padding=2)
 plt.title('Anteil erfolgreicher/nicht erfolgreicher Transaktionen nach PSP')
-plt.xlabel('PSP')
-plt.ylabel('Prozent')
+plt.xlabel('')
+plt.ylabel('')
 
 # Ändern Sie die Legende auf "erfolgreich" und "nicht erfolgreich"
-plt.legend(title='Success', labels=['erfolgreich', 'nicht erfolgreich'], bbox_to_anchor=(1, 1), loc='upper left')
+plt.legend(title='Success', labels=['erfolgreich', 'nicht erfolgreich'], loc='upper right')
 plt.tight_layout()
 plt.show()
 
 # PSP Verteilung nach Land
 combined_data = df.groupby(['country', 'PSP'])['PSP'].count().unstack()
 
-for country in combined_data.index:
-    print(country)
-    country_data = combined_data.loc[country]
-    colors = plt.cm.Paired(range(len(country_data)))
-    country_data.plot.pie(autopct='%1.1f%%', startangle=90, figsize=(6, 6), colors=colors)
+combined_data_percentage = combined_data.divide(combined_data.sum(axis=1), axis=0) * 100
 
-    plt.title(f'PSP Verteilung in {country}')
-    plt.ylabel('')  # Entfernt die y-Achsenbeschriftung
-    plt.tight_layout()
-    plt.show()
+# Stacked Bar Chart mit prozentualen Werten in den Beschriftungen
+ax = combined_data_percentage.plot(kind='bar', stacked=True, colormap='Paired', figsize=(10, 6), color=['C3', 'C2', 'C1', 'C0'])
+
+# Beschriftungen mit prozentualen Werten hinzufügen
+for container in ax.containers:
+    ax.bar_label(container, fmt='%.1f%%', label_type='center', fontsize=8, color='black', padding=2)
+
+plt.title('PSP Verteilung nach Ländern (Prozentuale Anteile)')
+plt.xlabel('')
+plt.ylabel('')
+plt.legend(title='Kategorien')
+plt.tight_layout()
+plt.show()
 
 # Anzahl Transaktionen nach Tageszeit
 df['hour'] = df['timestamp'].dt.hour

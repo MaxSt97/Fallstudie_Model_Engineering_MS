@@ -1,14 +1,6 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, make_scorer
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import LabelEncoder
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
+
 
 # Einlesen der Daten PSP_Jan_Feb_2019
 df = pd.read_excel("../PSP_Jan_Feb_2019.xlsx")
