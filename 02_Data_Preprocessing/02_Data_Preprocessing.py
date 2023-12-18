@@ -1,21 +1,93 @@
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, make_scorer
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 # Einlesen der Daten PSP_Jan_Feb_2019
 df = pd.read_excel("../PSP_Jan_Feb_2019.xlsx")
 
 # Fehlende Werte überprüfen
-print(f"Die Anzahl der Fehlenden Werte: " + str(df.isnull().sum()))
+print(f"Die Anzahl der Fehlenden Werte: {df.isnull().sum()}")
 
 # Duplikate überprüfen
-print(f"Anzahl der Duplikate: " + str(df.duplicated().sum()))
+print(f"Anzahl der Duplikate: {df.duplicated().sum()}")
 
 # Anzahl unterschiedliche Werte Country, Success, PSP, 3D_secured, card
 columns_to_count = ['country', 'success', '3D_secured', 'card', 'PSP']
-
 for column in columns_to_count:
-    print(f"Anzahl der unterschiedlichen Werte für {column}: " + str(df[column].value_counts()))
+    print(f"Anzahl der unterschiedlichen Werte für {column}: {df[column].value_counts()}")
 
 # Amount genauer beschreiben
 print(df['amount'].describe())
 
+# Spalte hinzufügen
+df['minute'] = df['tmsp'].dt.minute
+df['hour'] = df['tmsp'].dt.hour
+df['day'] = df['tmsp'].dt.day
+df['month'] = df['tmsp'].dt.month
+df['year'] = df['tmsp'].dt.year
+df['weekday'] = df['tmsp'].dt.weekday
+df['date'] = df['tmsp'].dt.date
 
+df['transaction_id'] = df.groupby(['amount', 'country', 'minute', 'date', "card"]).ngroup() + 1
+
+# Daten werden für das Modell vorbereitet
+
+# Gebühren für Zahlungen werden hinzugefügt
+fee_data = {
+    'PSP': ['Moneycard', 'Goldcard', 'UK_Card', 'Simplecard'],
+    'fee_success': [5, 10, 3, 1],
+    'fee_failure': [2, 5, 1, 0.5],
+}
+fee_df = pd.DataFrame(fee_data)
+
+# Gebühreninformationen für erfolgreiche Transaktionen hinzufügen
+# Erstellen Sie eine neue Spalte 'Gebühren' und initialisieren Sie sie mit NaN
+df['fee'] = pd.Series(dtype=float)
+
+# Setzen Sie die Gebühren basierend auf der 'success'-Bedingung
+df.loc[df['success'] == 1, 'fee'] = pd.merge(df[df['success'] == 1], fee_df, on='PSP', how='left')['fee_success']
+df.loc[df['success'] == 0, 'fee'] = pd.merge(df[df['success'] == 0], fee_df, on='PSP', how='left')['fee_failure']
+
+df['fee_sum'] = pd.Series(dtype=float)
+
+# Berechnen Sie die Gesamtkosten je 'TransactionID'
+df['fee_sum'] = df.groupby('transaction_id')['fee'].transform('sum')
+df['transaction_count'] = df.groupby('transaction_id')['transaction_id'].transform('count')
+
+# Feauture Encoding
+
+# Länder zu numerischen Werten umwandeln
+label_encoder_country = LabelEncoder()
+label_encoder_card = LabelEncoder()
+label_encoder_PSP = LabelEncoder()
+label_encoder_weekday = LabelEncoder()
+
+# 'country' zu numerischen Werten umwandeln
+df['country'] = label_encoder_country.fit_transform(df['country'])
+
+# 'card' zu numerischen Werten umwandeln
+df['card'] = label_encoder_card.fit_transform(df['card'])
+
+# 'PSP' zu numerischen Werten umwandeln
+df['PSP'] = label_encoder_PSP.fit_transform(df['PSP'])
+
+df['weekday'] = label_encoder_weekday.fit_transform(df['weekday'])
+
+# tmsp und date entfernen
+df = df.drop(['tmsp', 'date', 'Unnamed: 0'], axis=1)
+
+# Gebühr je nach Erfolg der Transaktion hinzufügen und je Transaktionsid berechnen
+
+# Korrelationsanalyse
+correlation_matrix = df.corr()
+print(correlation_matrix)
+
+df.to_csv('../PSP_Jan_Feb_2019_preprocessed.csv')
