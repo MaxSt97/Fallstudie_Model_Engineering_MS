@@ -65,7 +65,7 @@ combined_data = df.groupby(['country', 'PSP'])['PSP'].count().unstack()
 combined_data_percentage = combined_data.divide(combined_data.sum(axis=1), axis=0) * 100
 
 # Stacked Bar Chart mit prozentualen Werten in den Beschriftungen
-ax = combined_data_percentage.plot(kind='bar', stacked=True, colormap='Paired', figsize=(10, 6), color=['C3', 'C2', 'C1', 'C0'])
+ax = combined_data_percentage.plot(kind='bar', stacked=True, figsize=(10, 6), color=['C3', 'C2', 'C1', 'C0'])
 
 # Beschriftungen mit prozentualen Werten hinzufügen
 for container in ax.containers:
