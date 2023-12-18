@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import LabelEncoder
 
 
@@ -11,6 +12,23 @@ print(f"Die Anzahl der Fehlenden Werte: {df.isnull().sum()}")
 # Duplikate überprüfen
 print(f"Anzahl der Duplikate: {df.duplicated().sum()}")
 
+# Ausreißer behandeln
+"""isolation_forest = IsolationForest(contamination=0.01)  # contamination ist der Anteil der Ausreißer im Datensatz
+df['is_outlier'] = isolation_forest.fit_predict(df[['amount']])
+
+# Markieren Sie die Ausreißer im DataFrame
+outliers = df[df['is_outlier'] == -1]
+print("Ausreißer:")
+print(outliers[['amount']])
+
+# Plot für eine visuelle Darstellung (optional, matplotlib benötigt)
+import matplotlib.pyplot as plt
+
+plt.scatter(df.index, df['amount'], color='b', label='Normal')
+plt.scatter(outliers.index, outliers['amount'], color='r', label='Ausreißer')
+plt.legend()
+plt.show()"""
+#
 # Anzahl unterschiedliche Werte Country, Success, PSP, 3D_secured, card
 columns_to_count = ['country', 'success', '3D_secured', 'card', 'PSP']
 for column in columns_to_count:
