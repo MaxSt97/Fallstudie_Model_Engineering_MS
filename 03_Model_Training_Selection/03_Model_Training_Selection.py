@@ -6,11 +6,13 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, make_scorer
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
 import pandas as pd
 import pickle
 
-
+# Einlesen der Daten PSP_Jan_Feb_2019_preprocessed
 df = pd.read_csv("../PSP_Jan_Feb_2019_preprocessed.csv")
 
 # Feature Auswahl und Zielvariable
@@ -45,45 +47,9 @@ for model_name, model in models.items():
 
 print(f'The highes score is {highest_score} of model {model_name_highest_score}')
 
-"""model = RandomForestClassifier()
-parameters = {'n_estimators': [50, 100, 200, 300]}
-grid_search = GridSearchCV(model, parameters, cv=5, scoring='accuracy')
-grid_search.fit(X, y)
-
-best_n_estimators = grid_search.best_params_['n_estimators']
-print(f'Die beste Anzahl der Bäume ist {best_n_estimators}')
-
-model = RandomForestClassifier()
-parameters = {'max_depth': [10, 20, 30]}
-grid_search = GridSearchCV(model, parameters, cv=5, scoring='accuracy')
-grid_search.fit(X, y)
-
-best_max_depth = grid_search.best_params_['max_depth']
-print(f'Die ideale Tiefe ist {best_max_depth}')
-
-model = RandomForestClassifier()
-parameters = {'min_samples_split': [2, 3, 4]}
-grid_search = GridSearchCV(model, parameters, cv=5, scoring='accuracy')
-grid_search.fit(X, y)
-
-best_min_samples_split = grid_search.best_params_['min_samples_split']
-print(f'Die ideale Mindestanzahl an Samples für einen Split ist {best_min_samples_split}')
-
-model = RandomForestClassifier()
-parameters = {'min_samples_leaf': [1, 2, 3]}
-grid_search = GridSearchCV(model, parameters, cv=5, scoring='accuracy')
-grid_search.fit(X, y)
-
-best_min_samples_leaf = grid_search.best_params_['min_samples_leaf']
-print(f'Die ideale Mindestanzahl an Samples für ein Blatt ist {best_min_samples_leaf}')"""
-
-
-from sklearn.model_selection import RandomizedSearchCV
-from scipy.stats import randint
-
 model = RandomForestClassifier()
 
-# Definieren Sie die Hyperparameter-Räume für die zufällige Suche
+# Definieren der Hyperparameter-Räume für die zufällige Suche
 param_dist = {
     'n_estimators': randint(50, 300),  # Beispiel für eine kontinuierliche Verteilung
     'max_depth': [10, 20, 30,40,50,60],
@@ -137,13 +103,13 @@ print(f'Precision: {precision}')
 print(f'Recall: {recall}')
 print(f'F1-Score: {f1_score}')
 
-# most important features with feauture names
+# Relevante Features ausgeben
 feature_importances = pd.DataFrame(model.feature_importances_,
                                       index=X_train.columns,
                                         columns=['importance']).sort_values('importance', ascending=False)
 print(feature_importances)
 
-# save model
+# Modell speichern für die weitere Verwendung
 pickle.dump(model, open('../model.pkl', 'wb'))
 
 

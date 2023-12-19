@@ -1,7 +1,5 @@
 import pandas as pd
-from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import LabelEncoder
-
 
 # Einlesen der Daten PSP_Jan_Feb_2019
 df = pd.read_excel("../PSP_Jan_Feb_2019.xlsx")
@@ -12,23 +10,6 @@ print(f"Die Anzahl der Fehlenden Werte: {df.isnull().sum()}")
 # Duplikate überprüfen
 print(f"Anzahl der Duplikate: {df.duplicated().sum()}")
 
-# Ausreißer behandeln
-"""isolation_forest = IsolationForest(contamination=0.01)  # contamination ist der Anteil der Ausreißer im Datensatz
-df['is_outlier'] = isolation_forest.fit_predict(df[['amount']])
-
-# Markieren Sie die Ausreißer im DataFrame
-outliers = df[df['is_outlier'] == -1]
-print("Ausreißer:")
-print(outliers[['amount']])
-
-# Plot für eine visuelle Darstellung (optional, matplotlib benötigt)
-import matplotlib.pyplot as plt
-
-plt.scatter(df.index, df['amount'], color='b', label='Normal')
-plt.scatter(outliers.index, outliers['amount'], color='r', label='Ausreißer')
-plt.legend()
-plt.show()"""
-#
 # Anzahl unterschiedliche Werte Country, Success, PSP, 3D_secured, card
 columns_to_count = ['country', 'success', '3D_secured', 'card', 'PSP']
 for column in columns_to_count:
@@ -37,6 +18,7 @@ for column in columns_to_count:
 # Amount genauer beschreiben
 print(df['amount'].describe())
 
+## Daten werden für das Modell vorbereitet
 # Spalte hinzufügen
 df['minute'] = df['tmsp'].dt.minute
 df['hour'] = df['tmsp'].dt.hour
@@ -48,8 +30,6 @@ df['date'] = df['tmsp'].dt.date
 
 df['transaction_id'] = df.groupby(['amount', 'country', 'minute', 'date', "card"]).ngroup() + 1
 
-# Daten werden für das Modell vorbereitet
-
 # Gebühren für Zahlungen werden hinzugefügt
 fee_data = {
     'PSP': ['Moneycard', 'Goldcard', 'UK_Card', 'Simplecard'],
@@ -58,8 +38,7 @@ fee_data = {
 }
 fee_df = pd.DataFrame(fee_data)
 
-# Gebühreninformationen für erfolgreiche Transaktionen hinzufügen
-# Erstellen Sie eine neue Spalte 'Gebühren' und initialisieren Sie sie mit NaN
+# Gebühreninformationen hinzufügen
 df['fee'] = pd.Series(dtype=float)
 
 # Setzen Sie die Gebühren basierend auf der 'success'-Bedingung
@@ -74,7 +53,7 @@ df['transaction_count'] = df.groupby('transaction_id')['transaction_id'].transfo
 
 # Feauture Encoding
 
-# Länder zu numerischen Werten umwandeln
+# LabelEncoder für country, card, PSP, weekday
 label_encoder_country = LabelEncoder()
 label_encoder_card = LabelEncoder()
 label_encoder_PSP = LabelEncoder()
@@ -100,4 +79,5 @@ df = df.drop(['tmsp', 'date', 'Unnamed: 0'], axis=1)
 correlation_matrix = df.corr()
 print(correlation_matrix)
 
+# Daten für die weitere Nutzung zwischen speichern
 df.to_csv('../PSP_Jan_Feb_2019_preprocessed.csv')
