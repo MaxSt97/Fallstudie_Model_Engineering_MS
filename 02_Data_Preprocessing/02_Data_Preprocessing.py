@@ -52,7 +52,6 @@ df['fee_sum'] = df.groupby('transaction_id')['fee'].transform('sum')
 df['transaction_count'] = df.groupby('transaction_id')['transaction_id'].transform('count')
 
 # Feauture Encoding
-
 # LabelEncoder für country, card, PSP, weekday
 label_encoder_country = LabelEncoder()
 label_encoder_card = LabelEncoder()
