@@ -116,8 +116,55 @@ plt.title('Anzahl eindeutiger und identischer Transaktionen')
 plt.tight_layout()
 plt.show()
 
+####
+df['minute'] = df['tmsp'].dt.minute
+df['hour'] = df['tmsp'].dt.hour
+df['day'] = df['tmsp'].dt.day
+df['month'] = df['tmsp'].dt.month
+df['year'] = df['tmsp'].dt.year
+df['weekday'] = df['tmsp'].dt.weekday
+df['date'] = df['tmsp'].dt.date
+
+df['transaction_id'] = df.groupby(['amount', 'country', 'minute', 'date', "card"]).ngroup() + 1
+
+#zähle transaktionen die mehrere versuche benötigen bis die Transaktion gelingt
+bar = []
+for counter in [0,1,2,3,4,5]:
+    count = df.groupby('transaction_id').apply(lambda group: (group['success'] == 1).sum() == 1 and (group['success'] == 0).sum() == counter).sum()
+    bar.append(count)
+    print(count)
+
+#plot bar chart
+plt.figure()
+bars = plt.bar([0, 1, 2, 3, 4, 5], bar)
+plt.title('Anzahl Transaktionen nach Anzahl Versuche')
+plt.xlabel('Anzahl Versuche')
+plt.ylabel('Anzahl Transaktionen')
+for bar, value in zip(bars, bar):
+    plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), str(value),
+             ha='center', va='bottom', fontsize=8, color='black')
+plt.yticks([])
+plt.tight_layout()
+plt.show()
 
 
+
+
+#####kommt auf die folgeseite data preprocessing
+#print amoutn of unique transaction_ids
+print(df['transaction_id'].nunique())
+#count amount of transaction_ids which never succeed
+count = df.groupby('transaction_id').apply(lambda group: (group['success'] == 1).sum() == 0).sum()
+print(count)
+
+#count transaction_ids with more than one success and print transaction_id of these entries
+
+count = df.groupby('transaction_id').apply(lambda group: (group['success'] == 1).sum() > 1).sum()
+print(f"Number of transaction_ids with more than one success: {count}")
+
+# Print specific transaction_ids with more than one success
+transaction_ids_with_more_than_one_success = df.groupby('transaction_id').apply(lambda group: group['transaction_id'].iloc[0] if (group['success'] == 1).sum() > 1 else None).dropna().unique()
+print(transaction_ids_with_more_than_one_success)
 
 
 

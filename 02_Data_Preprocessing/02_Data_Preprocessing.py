@@ -72,11 +72,13 @@ df['weekday'] = label_encoder_weekday.fit_transform(df['weekday'])
 # tmsp und date entfernen
 df = df.drop(['tmsp', 'date', 'Unnamed: 0'], axis=1)
 
-# Gebühr je nach Erfolg der Transaktion hinzufügen und je Transaktionsid berechnen
-
 # Korrelationsanalyse
 correlation_matrix = df.corr()
 print(correlation_matrix)
 
 # Daten für die weitere Nutzung zwischen speichern
 df.to_csv('../PSP_Jan_Feb_2019_preprocessed.csv')
+
+
+
+
