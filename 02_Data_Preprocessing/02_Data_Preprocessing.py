@@ -4,6 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 # Einlesen der Daten PSP_Jan_Feb_2019
 df = pd.read_excel("../PSP_Jan_Feb_2019.xlsx")
 
+## Daten werden überprüft
 # Fehlende Werte überprüfen
 print(f"Die Anzahl der Fehlenden Werte: {df.isnull().sum()}")
 
@@ -52,21 +53,14 @@ df['fee_sum'] = df.groupby('transaction_id')['fee'].transform('sum')
 df['transaction_count'] = df.groupby('transaction_id')['transaction_id'].transform('count')
 
 # Feauture Encoding
-# LabelEncoder für country, card, PSP, weekday
 label_encoder_country = LabelEncoder()
 label_encoder_card = LabelEncoder()
 label_encoder_PSP = LabelEncoder()
 label_encoder_weekday = LabelEncoder()
 
-# 'country' zu numerischen Werten umwandeln
 df['country'] = label_encoder_country.fit_transform(df['country'])
-
-# 'card' zu numerischen Werten umwandeln
 df['card'] = label_encoder_card.fit_transform(df['card'])
-
-# 'PSP' zu numerischen Werten umwandeln
 df['PSP'] = label_encoder_PSP.fit_transform(df['PSP'])
-
 df['weekday'] = label_encoder_weekday.fit_transform(df['weekday'])
 
 # tmsp und date entfernen
@@ -75,6 +69,9 @@ df = df.drop(['tmsp', 'date', 'Unnamed: 0'], axis=1)
 # Korrelationsanalyse
 correlation_matrix = df.corr()
 print(correlation_matrix)
+
+# Entfernen von Features die nicht benötigt werden
+df = df.drop(['transaction_id', 'fee', 'fee_sum', 'transaction_count', 'year', 'month'], axis=1)
 
 # Daten für die weitere Nutzung zwischen speichern
 df.to_csv('../PSP_Jan_Feb_2019_preprocessed.csv')
