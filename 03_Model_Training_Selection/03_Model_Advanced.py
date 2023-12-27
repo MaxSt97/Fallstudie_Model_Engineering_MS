@@ -107,6 +107,9 @@ print(f'F1-Score: {f1_score}')
 feature_importances = pd.DataFrame(model.feature_importances_,
                                       index=X_train.columns,
                                         columns=['importance']).sort_values('importance', ascending=False)
+# Runden der Werte auf zwei Nachkommastellen
+feature_importances = feature_importances.round(2)
+
 print(feature_importances)
 
 # Modell speichern für die weitere Verwendung

@@ -63,15 +63,15 @@ df['card'] = label_encoder_card.fit_transform(df['card'])
 df['PSP'] = label_encoder_PSP.fit_transform(df['PSP'])
 df['weekday'] = label_encoder_weekday.fit_transform(df['weekday'])
 
-# tmsp und date entfernen
+# Entfernen von Features die nicht benötigt werden
 df = df.drop(['tmsp', 'date', 'Unnamed: 0'], axis=1)
+df = df.drop(['transaction_id', 'fee', 'fee_sum', 'transaction_count', 'year', 'month'], axis=1)
 
 # Korrelationsanalyse
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
 correlation_matrix = df.corr()
 print(correlation_matrix)
-
-# Entfernen von Features die nicht benötigt werden
-df = df.drop(['transaction_id', 'fee', 'fee_sum', 'transaction_count', 'year', 'month'], axis=1)
 
 # Daten für die weitere Nutzung zwischen speichern
 df.to_csv('../PSP_Jan_Feb_2019_preprocessed.csv')
