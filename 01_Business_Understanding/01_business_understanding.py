@@ -153,36 +153,3 @@ plt.show()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#####kommt auf die folgeseite data preprocessing
-#print amoutn of unique transaction_ids
-print(df['transaction_id'].nunique())
-#count amount of transaction_ids which never succeed
-count = df.groupby('transaction_id').apply(lambda group: (group['success'] == 1).sum() == 0).sum()
-print(count)
-
-#count transaction_ids with more than one success and print transaction_id of these entries
-
-count = df.groupby('transaction_id').apply(lambda group: (group['success'] == 1).sum() > 1).sum()
-print(f"Number of transaction_ids with more than one success: {count}")
-
-# Print specific transaction_ids with more than one success
-transaction_ids_with_more_than_one_success = df.groupby('transaction_id').apply(lambda group: group['transaction_id'].iloc[0] if (group['success'] == 1).sum() > 1 else None).dropna().unique()
-print(transaction_ids_with_more_than_one_success)
-
-
-
-
