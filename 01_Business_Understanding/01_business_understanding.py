@@ -166,6 +166,7 @@ plt.show()
 
 
 
+
 #####kommt auf die folgeseite data preprocessing
 #print amoutn of unique transaction_ids
 print(df['transaction_id'].nunique())

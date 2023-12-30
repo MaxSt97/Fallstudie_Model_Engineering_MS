@@ -95,7 +95,7 @@ y_pred = model.predict(X_test)
 accuracy = round(accuracy_score(y_test, y_pred),2)
 precision = round(precision_score(y_test, y_pred, zero_division=1.0, average='weighted'),2)
 recall = round(recall_score(y_test, y_pred, zero_division=1.0, average='weighted'),2)
-f1_score = round(f1_score(y_pred,y_test,zero_division=1.0,average='weighted'),2)
+f1_score = round(f1_score(y_test,y_pred,zero_division=1.0,average='weighted'),2)
 
 # Ergebnisse ausgeben
 print(f'Accuracy: {accuracy}')
