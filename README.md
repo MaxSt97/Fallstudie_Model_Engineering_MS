@@ -9,4 +9,5 @@
 - Im Anschluss soll die Qualität der zur Verfügung gestellten Daten beurteilt werden.
 - Für die Businesspartner sollen die Key Takeaways visualisiert werden.
 - Die Finale Aufgabe besteht darin, ein Baseline-Modell sowie ein präzises Vorhersagemodell zu entwickeln.
-  - Um das Vertrauen in das Modell zu stärken sollen einzelne erklärende Variablen diskutiert werden. Auch eine detailierte Fehleranalyse wird als entscheidende Voraussetzung genannt um vertrauen zu erzeugen.
+
+
