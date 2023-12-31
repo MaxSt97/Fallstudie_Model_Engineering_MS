@@ -58,9 +58,6 @@ fee_df = pd.DataFrame(fee_data)
 df.loc[df['success'] == 1, 'fee'] = pd.merge(df[df['success'] == 1], fee_df, on='PSP', how='left')['fee_success']
 df.loc[df['success'] == 0, 'fee'] = pd.merge(df[df['success'] == 0], fee_df, on='PSP', how='left')['fee_failure']
 
-# Berechnung des Erwartungswerts je PSP für success = 0 und success = 1 für Spalte "fee"
-print(df.groupby(['PSP', 'success'])['fee'].mean())
-
 # Feauture Encoding
 label_encoder_country = LabelEncoder()
 label_encoder_card = LabelEncoder()
