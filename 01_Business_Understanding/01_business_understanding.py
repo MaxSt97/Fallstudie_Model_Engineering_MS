@@ -113,6 +113,7 @@ plt.title('Anzahl eindeutiger und identischer Transaktionen')
 plt.tight_layout()
 plt.show()
 
+# Spalte Transaction ID hinzufügen
 df['minute'] = df['tmsp'].dt.minute
 df['hour'] = df['tmsp'].dt.hour
 df['day'] = df['tmsp'].dt.day

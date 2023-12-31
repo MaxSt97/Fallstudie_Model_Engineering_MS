@@ -1,4 +1,4 @@
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, IsolationForest
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
